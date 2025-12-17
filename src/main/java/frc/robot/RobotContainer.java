@@ -70,7 +70,12 @@ public class RobotContainer {
         // LED test controls
         joystick.x().onTrue(Commands.runOnce(() -> m_candle.setLedColor(2, 168, 158))); // gearcat teal!
         joystick.y().onTrue(Commands.runOnce(() -> m_candle.setRainbowAnimation()));
-        joystick.rightBumper().onTrue(Commands.runOnce(() -> m_candle.enableJoystickView()));
+        joystick.rightBumper().whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+            math.sqrt(math.pow(joystick.getLeftX(), 2) + math.pow(joystick.getLeftY(), 2))
+        )));
+        joystick.leftTrigger().whileTrue(new runCommand(() -> m_candle.colorWithBrightness(
+            joystick.getLeftTriggerAxis()
+        ))
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
