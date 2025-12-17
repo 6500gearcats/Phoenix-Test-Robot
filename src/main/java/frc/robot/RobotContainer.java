@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LedCANdle;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -35,6 +36,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    private LedCANdle m_candle = new LedCANdle();
 
     public RobotContainer() {
         configureBindings();
@@ -63,6 +66,11 @@ public class RobotContainer {
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+
+        // LED test controls
+        joystick.x().onTrue(Commands.runOnce(() -> m_candle.setLedColor(2, 168, 158))); // gearcat teal!
+        joystick.y().onTrue(Commands.runOnce(() -> m_candle.setRainbowAnimation()));
+        joystick.rightBumper().onTrue(Commands.runOnce(() -> m_candle.enableJoystickView()));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
