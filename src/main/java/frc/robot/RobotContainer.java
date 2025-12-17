@@ -10,10 +10,13 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
@@ -34,6 +37,8 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+
+    private final XboxController joystick2 = new XboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -70,12 +75,16 @@ public class RobotContainer {
         // LED test controls
         joystick.x().onTrue(Commands.runOnce(() -> m_candle.setLedColor(2, 168, 158))); // gearcat teal!
         joystick.y().onTrue(Commands.runOnce(() -> m_candle.setRainbowAnimation()));
-        joystick.rightBumper().whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
-            math.sqrt(math.pow(joystick.getLeftX(), 2) + math.pow(joystick.getLeftY(), 2))
-        )));
-        joystick.leftTrigger().whileTrue(new runCommand(() -> m_candle.colorWithBrightness(
-            joystick.getLeftTriggerAxis()
-        ))
+        // joystick.rightBumper().whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+        //     Math.sqrt(Math.pow(joystick.getLeftX(), 2) + Math.pow(joystick.getLeftY(), 2))
+        // )));
+
+        // joystick.leftTrigger().whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+        //     joystick.getLeftTriggerAxis()
+        // )));
+
+        new Trigger(() -> joystick2.getLeftTriggerAxis() > 0.01).whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+            () -> joystick2.getLeftTriggerAxis())));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
