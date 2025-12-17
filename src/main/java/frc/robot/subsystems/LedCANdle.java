@@ -48,13 +48,13 @@ public class LedCANdle extends SubsystemBase {
     candle.setControl(rainbow);
   }
 
-  public void rasterJoystickView(double joystickDist) {
+  public void colorWithBrightness(double brightness) {
     candle.setControl(new SolidColor(0, 7)
       .withColor(new RGBWColor(
         (int) color[0],
         (int) color[1],
         (int) color[2],
-        (int)(whiteFactor * 255))
+        (int)(brightness * 255))
       )
     );
   }
