@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -99,6 +100,10 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //drivetrain.registerTelemetry(logger::telemeterize);
+
+        new POVButton(joystick2, 0).onTrue(new RunCommand(() -> drivetrain.playMusic()));
+        new POVButton(joystick2, 90).onTrue(new RunCommand(() -> drivetrain.pauseMusic()));
+        new POVButton(joystick2, 180).onTrue(new RunCommand(() -> drivetrain.stopMusic()));
     }
 
     public Command getAutonomousCommand() {
