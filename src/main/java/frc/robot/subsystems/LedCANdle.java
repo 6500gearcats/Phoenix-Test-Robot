@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class LedCANdle extends SubsystemBase {
   private static CANdle candle = new CANdle(50, "Default Name");
   private static CANdleConfiguration config = new CANdleConfiguration();
-  private static final int END_INDEX = 200;
+  private static final int END_INDEX = 185; //8 for CANdle + 177 for strip
 
   private static EmptyAnimation empty = new EmptyAnimation(0);
   private static RainbowAnimation rainbow = new RainbowAnimation(0, END_INDEX);
@@ -39,6 +39,8 @@ public class LedCANdle extends SubsystemBase {
   private static HashMap<String, RGBWColor[]> flags = new HashMap<String, RGBWColor[]>();
   RGBWColor[] transFlag = {new RGBWColor(45, 103, 175), new RGBWColor(180, 45, 52), new RGBWColor(80, 80, 80), new RGBWColor(180, 45, 52)};
   RGBWColor[] biFlag = {new RGBWColor(180, 45, 52), new RGBWColor(80, 30, 80), new RGBWColor(0, 38, 168)};
+  RGBWColor[] americanFlag = {new RGBWColor(150, 0, 0), new RGBWColor(0, 0, 150), new RGBWColor(100, 100, 100)};
+  RGBWColor[] gearcatsFlag = {new RGBWColor(2, 92, 80), new RGBWColor(10, 20, 50)};
 
   /** Creates a new CANdle. */
   public LedCANdle() {
@@ -48,6 +50,8 @@ public class LedCANdle extends SubsystemBase {
 
     flags.put("trans", transFlag);
     flags.put("bi", biFlag);
+    flags.put("american", americanFlag);
+    flags.put("gearcats", gearcatsFlag);
 
     timer.restart();
   }

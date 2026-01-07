@@ -156,7 +156,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_orchestra.addInstrument(super.getModule(0).getDriveMotor());
         m_orchestra.addInstrument(super.getModule(0).getSteerMotor());
         // Attempt to load the chrp
-        m_orchestra.loadMusic("track.chrp");
+        m_orchestra.loadMusic("freebifrd.chrp");
     }
 
     public void playMusic() {

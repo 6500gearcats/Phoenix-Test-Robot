@@ -87,6 +87,7 @@ public class RobotContainer {
         new Trigger(() -> joystick2.getLeftTriggerAxis() > 0.01).whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
             () -> joystick2.getLeftTriggerAxis())));
 
+        // Change input str to 
         joystick.rightBumper().onTrue(Commands.runOnce(() -> m_candle.displayFlag("trans")));
 
         // Run SysId routines when holding back/start and X/Y.
