@@ -86,6 +86,8 @@ public class RobotContainer {
         new Trigger(() -> joystick2.getLeftTriggerAxis() > 0.01).whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
             () -> joystick2.getLeftTriggerAxis())));
 
+        joystick.rightBumper().onTrue(Commands.runOnce(() -> m_candle.transFlag()));
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));

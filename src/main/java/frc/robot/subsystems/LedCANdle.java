@@ -67,6 +67,23 @@ public class LedCANdle extends SubsystemBase {
     ));
   }
 
+  public void transFlag() {
+    RGBWColor blue = new RGBWColor(45, 103, 175); //91 206 250
+    RGBWColor pink = new RGBWColor(180, 45, 52); //245 169 184
+    RGBWColor white = new RGBWColor(64, 64, 64); //255 255 255
+    RGBWColor[] colors = {blue, pink, white, pink, blue};
+    int increment = 6;
+    int count = 0 + 8; //offset for CANdle
+    int color = 0;
+    while (count < END_INDEX) {
+      candle.setControl(new SolidColor(count, count + increment)
+        .withColor(colors[color % 5])
+      );
+      count += increment;
+      color++;
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
