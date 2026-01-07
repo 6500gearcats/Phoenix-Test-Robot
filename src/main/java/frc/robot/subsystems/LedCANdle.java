@@ -21,8 +21,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 
+import java.util.HashMap;
+
 public class LedCANdle extends SubsystemBase {
-  private static CANdle candle = new CANdle(50, "Default Name"); //TODO: change id
+  private static CANdle candle = new CANdle(50, "Default Name");
   private static CANdleConfiguration config = new CANdleConfiguration();
   private static final int END_INDEX = 200;
 
@@ -33,14 +35,20 @@ public class LedCANdle extends SubsystemBase {
   private static int fps = 20;
   private static double[] color = {255, 255, 255};
 
+  // FLAGS
+  private static HashMap<String, RGBWColor[]> flags = new HashMap<String, RGBWColor[]>();
+  RGBWColor[] transFlag = {new RGBWColor(45, 103, 175), new RGBWColor(180, 45, 52), new RGBWColor(80, 80, 80), new RGBWColor(180, 45, 52)};
+  RGBWColor[] biFlag = {new RGBWColor(180, 45, 52), new RGBWColor(80, 30, 80), new RGBWColor(0, 38, 168)};
+
   /** Creates a new CANdle. */
   public LedCANdle() {
     candle.getConfigurator().apply(config);
     candle.setControl(empty);
     candle.setControl(new SolidColor(0, END_INDEX).withColor(new RGBWColor(0, 255, 0)));
 
-    SmartDashboard.putNumberArray("Color {r, g, b}", color);
-    
+    flags.put("trans", transFlag);
+    flags.put("bi", biFlag);
+
     timer.restart();
   }
 
@@ -67,17 +75,19 @@ public class LedCANdle extends SubsystemBase {
     ));
   }
 
-  public void transFlag() {
-    RGBWColor blue = new RGBWColor(45, 103, 175); //91 206 250
-    RGBWColor pink = new RGBWColor(180, 45, 52); //245 169 184
-    RGBWColor white = new RGBWColor(64, 64, 64); //255 255 255
-    RGBWColor[] colors = {blue, pink, white, pink, blue};
+  public void displayFlag(String flagStr) {
+    RGBWColor[] flag = flags.get(flagStr);
+    if(flag == null) {
+      System.out.println("Flag not found: " + flagStr);
+      return;
+    }
+
     int increment = 6;
     int count = 0 + 8; //offset for CANdle
     int color = 0;
     while (count < END_INDEX) {
       candle.setControl(new SolidColor(count, count + increment)
-        .withColor(colors[color % 5])
+        .withColor(flag[color % flag.length])
       );
       count += increment;
       color++;
