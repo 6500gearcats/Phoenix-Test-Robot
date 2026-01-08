@@ -3,25 +3,18 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-
+import java.util.HashMap;
 import java.util.function.DoubleSupplier;
-
-import javax.xml.stream.events.EndDocument;
 
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
-import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
-
-import java.util.HashMap;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedCANdle extends SubsystemBase {
   private static CANdle candle = new CANdle(50, "Default Name");
@@ -36,6 +29,8 @@ public class LedCANdle extends SubsystemBase {
   private static double[] color = {255, 255, 255};
 
   // FLAGS
+  private static int currentFlag = -1;
+  private static String[] flagOptions = {"trans", "bi", "american", "gearcats"};
   private static HashMap<String, RGBWColor[]> flags = new HashMap<String, RGBWColor[]>();
   RGBWColor[] transFlag = {new RGBWColor(45, 103, 175), new RGBWColor(180, 45, 52), new RGBWColor(80, 80, 80), new RGBWColor(180, 45, 52)};
   RGBWColor[] biFlag = {new RGBWColor(180, 45, 52), new RGBWColor(80, 30, 80), new RGBWColor(0, 38, 168)};
@@ -96,6 +91,11 @@ public class LedCANdle extends SubsystemBase {
       count += increment;
       color++;
     }
+  }
+
+  public void cycleFlag() {
+    currentFlag = (currentFlag + 1) % flagOptions.length;
+    displayFlag(flagOptions[currentFlag]);
   }
 
   @Override
