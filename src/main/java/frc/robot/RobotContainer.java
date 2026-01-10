@@ -6,12 +6,15 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -45,8 +48,12 @@ public class RobotContainer {
 
     private LedCANdle m_candle = new LedCANdle();
 
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
+        autoChooser = AutoBuilder.buildAutoChooser("Tests");
         configureBindings();
+        FollowPathCommand.warmupCommand().schedule();
     }
 
     private void configureBindings() {
@@ -101,13 +108,9 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //drivetrain.registerTelemetry(logger::telemeterize);
-
-        new POVButton(joystick2, 0).onTrue(new RunCommand(() -> drivetrain.playMusic()));
-        new POVButton(joystick2, 90).onTrue(new RunCommand(() -> drivetrain.pauseMusic()));
-        new POVButton(joystick2, 180).onTrue(new RunCommand(() -> drivetrain.stopMusic()));
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
