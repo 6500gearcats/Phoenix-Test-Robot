@@ -4,20 +4,28 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LedCANdle;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -34,10 +42,18 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
+    private final XboxController joystick2 = new XboxController(0);
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    private LedCANdle m_candle = new LedCANdle();
+
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
+        autoChooser = AutoBuilder.buildAutoChooser("Tests");
         configureBindings();
+        FollowPathCommand.warmupCommand().schedule();
     }
 
     private void configureBindings() {
@@ -64,6 +80,23 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
 
+        // LED test controls
+        joystick.x().onTrue(Commands.runOnce(() -> m_candle.setLedColor(2, 92, 40))); // gearcat teal!
+        joystick.y().onTrue(Commands.runOnce(() -> m_candle.setRainbowAnimation()));
+        // joystick.rightBumper().whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+        //     Math.sqrt(Math.pow(joystick.getLeftX(), 2) + Math.pow(joystick.getLeftY(), 2))
+        // )));
+
+        // joystick.leftTrigger().whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+        //     joystick.getLeftTriggerAxis()
+        // )));
+
+        new Trigger(() -> joystick2.getLeftTriggerAxis() > 0.01).whileTrue(new RunCommand(() -> m_candle.colorWithBrightness(
+            () -> joystick2.getLeftTriggerAxis())));
+
+        // Change input str to 
+        joystick.rightBumper().onTrue(Commands.runOnce(() -> m_candle.cycleFlag()));
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -78,6 +111,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
