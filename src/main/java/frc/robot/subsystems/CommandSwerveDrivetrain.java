@@ -195,7 +195,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         configureAutoBuilder();
     }
-
+    //test
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
